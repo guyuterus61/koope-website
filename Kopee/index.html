@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Restaurant Koope</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="icon" type="image/x-icon" href="assets/Favicons.png">
+</head>
+<body class="is-loading">
+
+  <!-- ═══════════════════════════════════════════
+       AUTH LOADING OVERLAY (Fix: Firebase Flash)
+  ═══════════════════════════════════════════ -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-overlay-inner">
+      <span class="auth-overlay-icon">☕</span>
+      <div class="auth-overlay-bar">
+        <div class="auth-overlay-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       LOGOUT CONFIRMATION MODAL
+  ═══════════════════════════════════════════ -->
+  <div id="logoutModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-icon">☕</div>
+      <h3 class="modal-title">Yakin mau keluar?</h3>
+      <p class="modal-desc">Kamu akan kehilangan akses VIP dan harus login ulang.</p>
+      <div class="modal-actions">
+        <button class="modal-btn-cancel" id="modalCancel">Batal</button>
+        <button class="modal-btn-confirm" id="modalConfirm">Ya, Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       NAVBAR
+  ═══════════════════════════════════════════ -->
+  <nav id="navbar">
+    <div class="nav-logo">
+      <span class="logo-icon">☕</span>
+      <span class="logo-text">Koope</span>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="nav-link">Home</a></li>
+
+      <!-- Guest: Menu biasa -->
+      <li class="guest-only">
+        <a href="#menu" class="nav-link">Menu</a>
+      </li>
+
+      <!-- VIP: Exclusive Menu + Special Discount -->
+      <li class="vip-only hidden">
+        <a href="#menu" class="nav-link vip-link">Exclusive Menu</a>
+      </li>
+      <li class="vip-only hidden">
+        <a href="#discount" class="nav-link vip-link">Special Discount</a>
+      </li>
+    </ul>
+
+    <div class="nav-auth">
+      <!-- Guest: Login button -->
+      <a href="login.html" class="btn-login guest-only">Login</a>
+
+      <!-- VIP: Profile Circle -->
+      <div class="profile-circle vip-only hidden" id="profileCircle">
+        <span id="profileInitial">U</span>
+      </div>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div class="profile-dropdown hidden" id="profileDropdown">
+      <div class="dropdown-item">
+        <span class="dropdown-label">Email</span>
+        <span class="dropdown-value" id="dropdownEmail">—</span>
+      </div>
+      <div class="dropdown-item">
+        <span class="dropdown-label">Password</span>
+        <span class="dropdown-value">●●●●●●●●</span>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="reset.html" class="btn-reset">Reset Password</a>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="mobile-nav-drawer hidden" id="mobileNavDrawer">
+    <ul class="mobile-nav-links">
+      <li><a href="#home" class="mobile-nav-link">Home</a></li>
+      <li class="guest-only"><a href="#menu" class="mobile-nav-link">Menu</a></li>
+      <li class="vip-only hidden"><a href="#menu" class="mobile-nav-link vip-link">Exclusive Menu</a></li>
+      <li class="vip-only hidden"><a href="#discount" class="mobile-nav-link vip-link">Special Discount</a></li>
+    </ul>
+    <div class="mobile-nav-footer">
+      <a href="login.html" class="mobile-btn-login guest-only">Login</a>
+      <div class="mobile-vip-actions vip-only hidden">
+        <a href="reset.html" class="mobile-nav-link" style="font-size:0.8rem; opacity:0.7;">Reset Password</a>
+        <button class="mobile-btn-logout" id="mobileLogoutBtn">Logout</button>
+      </div>
+    </div>
+  </div>
+  <!-- Drawer backdrop -->
+  <div class="mobile-nav-backdrop hidden" id="mobileNavBackdrop"></div>
+
+  <!-- ═══════════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════════ -->
+  <section id="home" class="hero">
+    <div class="hero-overlay"></div>
+
+    <!-- Guest Hero -->
+    <div class="hero-content guest-only" id="guestHero">
+      <p class="hero-eyebrow">Est. 2025 · Kediri</p>
+      <h1 class="hero-title">
+        A Cup of<br/>
+        <em>Extraordinary</em>
+      </h1>
+      <p class="hero-subtitle">
+        Bergabunglah sebagai member dan buka akses<br/>
+        <strong>Secret Menu</strong> eksklusif &amp; <strong>Diskon VIP</strong> istimewa.
+      </p>
+      <a href="register.html" class="btn-primary page-link">Get Membership</a>
+    </div>
+
+    <!-- VIP Hero -->
+    <div class="hero-content vip-only hidden" id="vipHero">
+      <p class="hero-eyebrow">Welcome back, VIP Member</p>
+      <h1 class="hero-title vip-title">
+        Selamat<br/>
+        <em id="vipGreeting">Datang Kembali</em>
+      </h1>
+      <p class="hero-subtitle">
+        Meja terbaik selalu menunggu Anda.<br/>
+        Nikmati pengalaman kopi yang tak tertandingi.
+      </p>
+      <a href="#menu" class="btn-primary">Lihat Exclusive Menu</a>
+    </div>
+
+    <!-- Floating coffee beans deco -->
+    <div class="bean bean-1">✦</div>
+    <div class="bean bean-2">✦</div>
+    <div class="bean bean-3">✦</div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       MENU SECTION
+  ═══════════════════════════════════════════ -->
+  <section id="menu" class="menu-section">
+    <div class="section-header">
+      <p class="section-eyebrow">Our Offerings</p>
+      <h2 class="section-title">
+        <span class="guest-only">The Menu</span>
+        <span class="vip-only hidden">Exclusive Collection</span>
+      </h2>
+    </div>
+
+    <div class="menu-grid" id="menuGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SPECIAL DISCOUNT SECTION (VIP Only)
+  ═══════════════════════════════════════════ -->
+  <section id="discount" class="discount-section vip-only hidden">
+    <div class="section-header">
+      <p class="section-eyebrow">Exclusive For You</p>
+      <h2 class="section-title">Special Discount</h2>
+    </div>
+    <div class="discount-grid">
+      <div class="discount-card">
+        <div class="discount-badge">20%</div>
+        <h3>Happy Hour</h3>
+        <p>Setiap hari pukul 14.00 – 16.00 WIB untuk semua menu kopi pilihan.</p>
+      </div>
+      <div class="discount-card">
+        <div class="discount-badge">Buy 2<br/>Get 1</div>
+        <h3>Weekend Special</h3>
+        <p>Sabtu &amp; Minggu, beli 2 minuman gratis 1 pastry favorit Anda.</p>
+      </div>
+      <div class="discount-card">
+        <div class="discount-badge">15%</div>
+        <h3>Birthday Treat</h3>
+        <p>Diskon spesial di bulan ulang tahun Anda. Tunjukkan kartu member VIP.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-logo"><img src="assets/FullLogo.png" alt="Logo"></div>
+    <p class="footer-tagline">Where every cup tells a story.</p>
+    <p class="footer-copy">© 2026 Restaurant Koope · Kediri, Indonesia</p>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════
+       FIREBASE (Compat)
+  ═══════════════════════════════════════════ -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="JS/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Koope - Login</title>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="CSS/login.css">
+        <link rel="stylesheet" href="CSS/kopee-toast.css">
+        <link rel="icon" type="image/x-icon" href="assets/Favicons.png">
+    </head>
+    <body>
+        
+        <main class="hero">
+        <div class="container-log">
+            <div class="text-log">
+                <h1>Welcome</h1>
+                <p>Please enter your details to access the VIP website.</p>
+            </div>
+ 
+            <form action="" method="post" id="login-form">
+                <div class="all-input-log">
+                    <div class="email-log">
+                        <label for="emai-log">Email address:</label>
+                        <input type="email" name="email-log" id="email-log" placeholder="Your@gmail.com" required>
+                    </div>
+ 
+                    <div class="pass-log">
+                        <label for="pass-log">Password:</label>
+                        <input type="password" name="pass-log" id="pass-log" placeholder="●●●●●●●●" required>
+                    </div>
+ 
+                    <div class="go-reg">
+                        <h3>Don't have an account? <a href="register.html">Sign Up</a></h3>
+                    </div>
+ 
+                    <div class="btn-log">
+                        <button type="submit" id="log-btn">Sign In</button>
+                    </div>
+                </div>
+            </form>
+ 
+            <div class="logo">
+                <img src="assets/FullLogo.png" alt="FullLogo">
+            </div>
+        </div>
+        </main>
+ 
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+ 
+        <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9ntDSRtMV8XdcSem7I2onoB1LIIuaQjk",
+            authDomain: "kopee-web.firebaseapp.com",
+            projectId: "kopee-web",
+            storageBucket: "kopee-web.firebasestorage.app",
+            messagingSenderId: "691671488388",
+            appId: "1:691671488388:web:d05dca2671c576ff2aafd1"
+          };
+        
+          const app = firebase.initializeApp(firebaseConfig);
+          const auth = firebase.auth();
+          const db = firebase.firestore();
+          const rtdb = firebase.database();
+        </script>
+ 
+        <!-- Toast system harus load sebelum login.js -->
+        <script src="JS/kopee-toast.js"></script>
+        <script src="JS/login.js"></script>
+    </body>
+</html>
