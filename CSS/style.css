@@ -68,15 +68,15 @@ a { text-decoration: none; color: inherit; }
 body { animation: pageFadeIn 0.4s ease forwards; }
 
 @keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 body.page-leaving { animation: pageFadeOut 0.35s ease forwards; }
 
 @keyframes pageFadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-8px); }
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: translate3d(0, -8px, 0); }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -87,6 +87,7 @@ body.page-leaving { animation: pageFadeOut 0.35s ease forwards; }
   background: var(--brown-dark);
   display: flex; align-items: center; justify-content: center;
   transition: opacity 0.6s ease;
+  transform: translate3d(0,0,0);
 }
 .auth-overlay--hiding { opacity: 0; pointer-events: none; }
 
@@ -337,8 +338,8 @@ body.is-loading { overflow: hidden; }
   animation: heroReveal 1s ease forwards;
 }
 @keyframes heroReveal {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 .hero-content { flex: 1; max-width: 520px; }
@@ -369,7 +370,7 @@ body.is-loading { overflow: hidden; }
   box-shadow: 0 8px 24px rgba(201,169,110,0.3);
 }
 .btn-primary:hover {
-  background: var(--gold-light); transform: translateY(-2px);
+  background: var(--gold-light); transform: translate3d(0,-2px,0);
   box-shadow: 0 14px 36px rgba(201,169,110,0.4);
 }
 
@@ -383,7 +384,7 @@ body.is-loading { overflow: hidden; }
 }
 .btn-secondary:hover {
   background: rgba(248,244,238,0.1); border-color: rgba(248,244,238,0.6);
-  transform: translateY(-2px);
+  transform: translate3d(0,-2px,0);
 }
 
 /* Hero image */
@@ -481,12 +482,12 @@ body.is-loading { overflow: hidden; }
 }
 .filter-pill:hover {
   border-color: var(--gold); color: var(--gold-deep);
-  transform: translateY(-2px); box-shadow: var(--shadow-sm);
+  transform: translate3d(0,-2px,0); box-shadow: var(--shadow-sm);
 }
 .filter-pill.active {
   background: var(--gold); border-color: var(--gold);
   color: var(--brown-dark); font-weight: 500;
-  transform: translateY(-2px);
+  transform: translate3d(0,-2px,0);
   box-shadow: 0 6px 20px rgba(201,169,110,0.3);
 }
 
@@ -538,13 +539,18 @@ body.is-loading { overflow: hidden; }
   box-shadow: var(--shadow-sm);
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
   animation: cardReveal 0.5s ease forwards; opacity: 0;
+  transform: translate3d(0,0,0);
+}
+/* will-change hanya aktif saat hover — hemat RAM di iGPU */
+.menu-card:hover {
+  will-change: transform;
 }
 @keyframes cardReveal {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 .menu-card:hover {
-  transform: translateY(-10px) scale(1.01);
+  transform: translate3d(0, -10px, 0) scale(1.01);
   box-shadow: var(--shadow-lg);
 }
 .menu-card.vip-card {
@@ -668,8 +674,8 @@ body.is-loading { overflow: hidden; }
 
 /* Shimmer keyframe */
 @keyframes shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
+  0%   { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(100%, 0, 0); }
 }
 
 .skeleton-card {
@@ -680,13 +686,16 @@ body.is-loading { overflow: hidden; }
 
 .skeleton-img {
   height: 180px;
-  background: linear-gradient(90deg,
-    var(--cream-dark) 25%,
-    #ede4d8 50%,
-    var(--cream-dark) 75%
-  );
-  background-size: 600px 100%;
+  background: var(--cream-dark);
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-img::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, #ede4d8 50%, transparent 100%);
   animation: shimmer 1.4s ease-in-out infinite;
+  will-change: transform;
 }
 
 .skeleton-body {
@@ -698,13 +707,16 @@ body.is-loading { overflow: hidden; }
 
 .skeleton-line {
   border-radius: var(--radius-full);
-  background: linear-gradient(90deg,
-    var(--cream-dark) 25%,
-    #ede4d8 50%,
-    var(--cream-dark) 75%
-  );
-  background-size: 600px 100%;
+  background: var(--cream-dark);
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-line::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, #ede4d8 50%, transparent 100%);
   animation: shimmer 1.4s ease-in-out infinite;
+  will-change: transform;
 }
 
 .skeleton-line--title {
@@ -738,19 +750,19 @@ body.is-loading { overflow: hidden; }
   transition:
     opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  contain: layout style;
 }
 
 /* Arah animasi */
-.reveal--up   { transform: translateY(32px); }
-.reveal--down { transform: translateY(-24px); }
-.reveal--left { transform: translateX(-32px); }
-.reveal--right{ transform: translateX(32px); }
+.reveal--up   { transform: translate3d(0, 32px, 0); }
+.reveal--down { transform: translate3d(0, -24px, 0); }
+.reveal--left { transform: translate3d(-32px, 0, 0); }
+.reveal--right{ transform: translate3d(32px, 0, 0); }
 
 /* Triggered state — elemen masuk viewport */
 .reveal.revealed {
   opacity: 1;
-  transform: translate(0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* Override cardReveal animasi CSS bawaan untuk cards yang
@@ -762,33 +774,39 @@ body.is-loading { overflow: hidden; }
 /* Tapi tetap mulai dari opacity 0 + translateY */
 .menu-card.scroll-observed:not(.revealed) {
   opacity: 0;
-  transform: translateY(32px);
+  transform: translate3d(0, 32px, 0);
 }
 .menu-card.scroll-observed.revealed {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* ══════════════════════════════════════════════════════════
    FASE 3 — HERO PARALLAX
 ══════════════════════════════════════════════════════════ */
 
-/* Hero background position dikendalikan JS via inline style */
+/* Parallax sekarang dihandle JS via translate3d layer (#parallax-bg)
+   background-attachment:fixed dihapus — itu CPU heavy & ga smooth */
 .hero {
-  background-attachment: fixed; /* fallback sebelum JS jalan */
-  will-change: background-position;
+  background-attachment: scroll;
+}
+
+/* Parallax background layer — GPU composited */
+#parallax-bg {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* Hero inner transition saat parallax drift */
 .hero-inner {
   will-change: transform;
-  transition: transform 0.05s linear;
+  backface-visibility: hidden;
 }
 
 /* Di mobile — matiin parallax */
 @media (max-width: 768px) {
-  .hero { background-attachment: scroll; }
   .hero-inner { transform: none !important; }
+  #parallax-bg { transform: none !important; }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -813,10 +831,12 @@ body.is-loading { overflow: hidden; }
   margin-left: -4px;
   margin-top: -4px;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.05s linear,
+  transition: opacity 0.2s ease,
               width 0.2s ease, height 0.2s ease,
               background 0.2s ease;
   will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(-999px, -999px, 0); /* pre-promote, posisi off-screen */
 }
 
 /* Ring — lingkaran besar yang ngikutin dengan lag */
@@ -837,6 +857,8 @@ body.is-loading { overflow: hidden; }
               border-color 0.25s ease,
               background 0.25s ease;
   will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(-999px, -999px, 0); /* pre-promote, posisi off-screen */
 }
 
 /* Visible state */
@@ -892,10 +914,11 @@ body.is-loading { overflow: hidden; }
   font-size: 0.9rem;
   box-shadow: 0 8px 24px rgba(201, 169, 110, 0.4);
   cursor: pointer;
+  will-change: transform, opacity;
 
   /* Hidden by default */
   opacity: 0;
-  transform: translateY(16px) scale(0.85);
+  transform: translate3d(0, 16px, 0) scale(0.85);
   pointer-events: none;
   transition:
     opacity 0.3s ease,
@@ -906,17 +929,17 @@ body.is-loading { overflow: hidden; }
 
 .back-to-top--visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
   pointer-events: all;
 }
 
 .back-to-top:hover {
   background: var(--gold-light);
-  transform: translateY(-3px) scale(1.05);
+  transform: translate3d(0, -3px, 0) scale(1.05);
   box-shadow: 0 14px 32px rgba(201, 169, 110, 0.5);
 }
 .back-to-top:active {
-  transform: translateY(0) scale(0.97);
+  transform: translate3d(0, 0, 0) scale(0.97);
 }
 
 /* Mobile — posisi lebih ke atas biar ga ketutup browser UI */
@@ -927,3 +950,48 @@ body.is-loading { overflow: hidden; }
     font-size: 0.85rem;
   }
 }
+
+/* ══════════════════════════════════════════════════════════
+   ADAPTIVE PERFORMANCE — CSS tier adjustments
+   data-perf attribute di-set oleh PerfDetector di JS
+══════════════════════════════════════════════════════════ */
+
+/* Custom animation duration variable */
+:root { --anim-duration: 0.65s; }
+
+.reveal {
+  transition:
+    opacity var(--anim-duration) cubic-bezier(0.22, 1, 0.36, 1),
+    transform var(--anim-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* MEDIUM tier — kurangin durasi & jarak animasi */
+[data-perf="medium"] .reveal--up   { transform: translate3d(0, 18px, 0); }
+[data-perf="medium"] .reveal--down { transform: translate3d(0, -14px, 0); }
+
+/* LOW tier — animasi super minimal, hampir instant */
+[data-perf="low"] .reveal--up,
+[data-perf="low"] .reveal--down,
+[data-perf="low"] .reveal--left,
+[data-perf="low"] .reveal--right { transform: translate3d(0, 0, 0); }
+
+[data-perf="low"] .menu-card {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+[data-perf="low"] .menu-card.scroll-observed:not(.revealed) {
+  opacity: 1;
+  transform: none;
+}
+
+/* REDUCED MOTION — matiin semua animasi, ikutin preferensi OS user */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+.reduced-motion .reveal { opacity: 1; transform: none; }
+.reduced-motion .menu-card { animation: none; opacity: 1; }

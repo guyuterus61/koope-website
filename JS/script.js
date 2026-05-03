@@ -201,7 +201,8 @@ function initMenu(isVipUser) {
   });
 
   // Tampilkan skeleton dulu, baru render real cards setelah delay singkat
-  showSkeletons(isVipUser ? 12 : 8);
+  // Skeleton count dari PerfDetector — auto-adjust sesuai tier device
+  showSkeletons(PerfDetector.features.skeletonCount);
   setTimeout(() => renderMenu(), 600);
 }
 
@@ -382,6 +383,13 @@ const revealObserver = new IntersectionObserver((entries) => {
 });
 
 function initScrollAnimations() {
+  // Skip kalau user minta reduced motion
+  if (!PerfDetector.features.scrollAnim) {
+    // Langsung tampilin semua elemen tanpa animasi
+    document.querySelectorAll(".reveal").forEach(el => el.classList.add("revealed"));
+    return;
+  }
+
   // Section headers
   document.querySelectorAll(".section-header").forEach((el, i) => {
     el.classList.add("reveal", "reveal--up");
@@ -434,23 +442,59 @@ function initParallax() {
   // Skip parallax di mobile (performa)
   if (window.innerWidth < 768) return;
 
+  // Gunakan PerfDetector — auto skip kalau tier low
+  if (!PerfDetector.features.parallax) {
+    console.log("Parallax dimatiin oleh Performance Detector (tier:", PerfDetector.tier + ")");
+    return;
+  }
+
+  // Inject pseudo-layer buat parallax — GPU composited layer
+  // Lebih ringan dari backgroundPositionY yang trigger CPU repaint
+  const parallaxBg = document.createElement("div");
+  parallaxBg.id = "parallax-bg";
+  parallaxBg.style.cssText = `
+    position: absolute; inset: -30% 0;
+    background: inherit;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    pointer-events: none;
+  `;
+  // Force GPU layer promotion sekarang, bukan nunggu scroll pertama
+  // Ini yang bikin delay hilang — layer udah siap di VRAM sebelum user scroll
+  requestAnimationFrame(() => {
+    parallaxBg.style.transform = "translate3d(0, 0.1px, 0)";
+    requestAnimationFrame(() => {
+      parallaxBg.style.transform = "translate3d(0, 0, 0)";
+    });
+  });
+  // Copy background dari hero ke layer
+  const heroStyle = getComputedStyle(hero);
+  parallaxBg.style.backgroundImage = heroStyle.backgroundImage;
+  parallaxBg.style.backgroundSize  = "cover";
+  hero.insertBefore(parallaxBg, hero.firstChild);
+
   let ticking = false;
 
   window.addEventListener("scroll", () => {
     if (ticking) return;
     requestAnimationFrame(() => {
-      const scrollY  = window.scrollY;
-      const heroH    = hero.offsetHeight;
+      const scrollY = window.scrollY;
+      const heroH   = hero.offsetHeight;
 
-      // Parallax background — gerak lebih lambat dari scroll
       if (scrollY <= heroH) {
-        const offset = scrollY * 0.35;
-        hero.style.backgroundPositionY = `calc(50% + ${offset}px)`;
+        // GPU: translate3d jauh lebih ringan dari backgroundPositionY
+        const bgOffset      = scrollY * 0.25;
+        const contentOffset = scrollY * 0.04;
 
-        // Hero content slight upward drift
+        parallaxBg.style.transform = `translate3d(0, ${bgOffset}px, 0)`;
+
         const heroInner = hero.querySelector(".hero-inner");
         if (heroInner) {
-          heroInner.style.transform = `translateY(${scrollY * 0.08}px)`;
+          heroInner.style.transform = `translate3d(0, ${contentOffset}px, 0)`;
         }
       }
 
@@ -517,22 +561,29 @@ function initCustomCursor() {
   let ringX  = 0, ringY  = 0;
   let rafId  = null;
 
-  // Update posisi dot langsung (instant)
+  // Update posisi dot - pakai RAF throttle biar ga spike CPU
+  let cursorRafId = null;
   document.addEventListener("mousemove", (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
 
-    // Tampilkan kalau pertama kali gerak
-    cursorDot.classList.add("cursor-visible");
-    cursorRing.classList.add("cursor-visible");
-  });
+    if (!cursorRafId) {
+      cursorRafId = requestAnimationFrame(() => {
+        // GPU: translate3d bukan translate
+        cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        cursorDot.classList.add("cursor-visible");
+        cursorRing.classList.add("cursor-visible");
+        cursorRafId = null;
+      });
+    }
+  }, { passive: true });
 
-  // Ring ngikutin dengan lag (trailing effect)
+  // Ring ngikutin dengan lag (trailing effect) - GPU translate3d
   function animateRing() {
-    ringX += (mouseX - ringX) * 0.12;
-    ringY += (mouseY - ringY) * 0.12;
-    cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+    // translate3d paksa GPU compositing layer
+    cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
     rafId = requestAnimationFrame(animateRing);
   }
   animateRing();
@@ -600,8 +651,114 @@ function initBackToTop() {
   });
 }
 
+// ─── PAUSE ANIMATIONS WHEN TAB HIDDEN ───────────────────────
+// Matiin RAF loops waktu user pindah tab — hemat CPU signifikan
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // Tab ga aktif — stop cursor ring loop
+    if (typeof rafId !== "undefined" && rafId) {
+      cancelAnimationFrame(rafId);
+    }
+  } else {
+    // Tab aktif lagi — restart ring loop kalau cursor aktif
+    const ring = document.getElementById("cursor-ring");
+    if (ring) {
+      // Re-init via small trick: trigger mousemove
+      const ev = new MouseEvent("mousemove", { clientX: window.innerWidth/2, clientY: window.innerHeight/2 });
+      document.dispatchEvent(ev);
+    }
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// ADAPTIVE PERFORMANCE DETECTOR
+// Deteksi kondisi device real-time, auto-matiin fitur berat
+// Pure Browser APIs — no key, no library, no signup
+// ══════════════════════════════════════════════════════════
+
+const PerfDetector = (() => {
+
+  // ─── DETEKSI ───────────────────────────────────────────
+  const ram         = navigator.deviceMemory || 4;        // GB, default 4
+  const cores       = navigator.hardwareConcurrency || 2; // CPU cores
+  const connection  = navigator.connection || {};
+  const netType     = connection.effectiveType || "4g";   // 4g/3g/2g/slow-2g
+  const saveData    = connection.saveData || false;        // user aktifin "hemat data"
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ─── SCORING ───────────────────────────────────────────
+  // Hitung "performance score" dari semua faktor
+  // Makin tinggi = device makin kuat
+  let score = 0;
+  if (ram >= 8)  score += 3;
+  else if (ram >= 4) score += 2;
+  else if (ram >= 2) score += 1;
+
+  if (cores >= 8)  score += 3;
+  else if (cores >= 4) score += 2;
+  else if (cores >= 2) score += 1;
+
+  if (netType === "4g") score += 2;
+  else if (netType === "3g") score += 1;
+
+  // Faktor pengurang
+  if (saveData)       score -= 2;
+  if (reducedMotion)  score -= 10; // user minta reduce motion = matiin semua
+
+  // ─── TIER ──────────────────────────────────────────────
+  // high   (score ≥ 6): semua fitur aktif
+  // medium (score 3-5): animasi dikurangin
+  // low    (score < 3): animasi minimal
+  const tier = score >= 6 ? "high" : score >= 3 ? "medium" : "low";
+
+  // ─── FEATURE FLAGS ─────────────────────────────────────
+  const features = {
+    parallax:       tier === "high",
+    customCursor:   tier !== "low",
+    scrollAnim:     !reducedMotion,
+    skeletonCount:  tier === "high" ? 8 : tier === "medium" ? 6 : 4,
+    animDuration:   tier === "high" ? 1 : tier === "medium" ? 0.7 : 0.4,
+  };
+
+  // ─── LOG (dev info) ────────────────────────────────────
+  console.log(`%c☕ Koope Performance Detector`, "color:#c9a96e; font-weight:bold");
+  console.log(`RAM: ${ram}GB | Cores: ${cores} | Net: ${netType} | SaveData: ${saveData} | ReducedMotion: ${reducedMotion}`);
+  console.log(`Score: ${score} → Tier: ${tier.toUpperCase()}`);
+  console.log("Features:", features);
+
+  // ─── APPLY CSS TIER ────────────────────────────────────
+  // Tambahin class ke body buat CSS bisa ikut adapt
+  document.documentElement.setAttribute("data-perf", tier);
+
+  // Kalau reduced motion, tambahin class khusus
+  if (reducedMotion) document.documentElement.classList.add("reduced-motion");
+
+  // Listen perubahan koneksi real-time
+  connection.addEventListener?.("change", () => {
+    const newType = connection.effectiveType;
+    console.log(`%c☕ Koneksi berubah: ${newType}`, "color:#c9a96e");
+    // Reload fitur kalau koneksi drop ke 2g
+    if (newType === "2g" || newType === "slow-2g") {
+      document.documentElement.setAttribute("data-perf", "low");
+    }
+  });
+
+  return { tier, features, ram, cores, netType, reducedMotion };
+})();
+
+// ─── TERAPIN KE SEMUA FITUR ──────────────────────────────────
+
+// Set CSS animation duration variable sesuai tier
+if (PerfDetector.tier !== "high") {
+  const dur = PerfDetector.features.animDuration + "s";
+  document.documentElement.style.setProperty("--anim-duration", dur);
+}
+
 // ─── INIT FASE 4 ─────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  initCustomCursor();
+  // Custom cursor hanya kalau tier medium/high
+  if (PerfDetector.features.customCursor) {
+    initCustomCursor();
+  }
   initBackToTop();
 });
