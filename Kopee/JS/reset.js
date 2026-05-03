@@ -59,7 +59,7 @@ const firebaseConfig = {
   
   /** Tampilkan toast sukses atau error */
   function showToast(type, message) {
-    toast.className      = `toast ${type}`;
+    toast.className      = `inline-toast ${type}`;
     toastIcon.textContent = type === "success" ? "✓" : "✕";
     toastMsg.textContent  = message;
     toast.classList.remove("hidden");

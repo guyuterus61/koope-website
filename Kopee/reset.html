@@ -1,127 +1,106 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <!-- ── Security Headers via Meta ── -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-Content-Type-Options" content="nosniff"/>
-
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin"/>
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()"/>
-  <!-- ✅ CSP via meta — tanpa frame-ancestors -->
-<meta http-equiv="Content-Security-Policy"
-content="default-src 'self';
-         script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com;
-         style-src  'self' https://fonts.googleapis.com 'unsafe-inline';
-         font-src   https://fonts.gstatic.com;
-         connect-src https://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com;
-         img-src    'self' data: https:;"/>
-
-  <title>Koope - Reset Password</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="CSS/reset.css"/>
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com;
+             style-src  'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+             font-src   https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+             connect-src https://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com;
+             img-src    'self' data: https:;"/>
+  <title>Reset Password — Restaurant Koope Kediri</title>
+  <meta name="description" content="Reset password akun VIP Koope kamu. Masukkan email dan kami kirimkan link untuk membuat password baru."/>
+  <meta property="og:title"       content="Reset Password — Restaurant Koope"/>
+  <meta property="og:description" content="Reset password akun VIP Koope kamu dengan mudah dan aman."/>
+  <meta property="og:image"       content="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80"/>
+  <meta name="theme-color"        content="#2d1b0e"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/auth.css">
   <link rel="icon" type="image/x-icon" href="assets/Favicons.png">
 </head>
 <body>
+  <div class="page-split">
 
-  <!-- ── Ambient Background Orbs ── -->
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="bg-orb orb-3"></div>
-
-  <!-- ── Floating deco ── -->
-  <div class="deco deco-1">✦</div>
-  <div class="deco deco-2">✦</div>
-  <div class="deco deco-3">✦</div>
-
-  <!-- ══════════════════════════════════════
-       MAIN CARD
-  ══════════════════════════════════════ -->
-  <main class="page-center">
-    <div class="glass-card" id="resetCard">
-
-      <!-- Logo -->
-      <a href="index.html" class="card-logo" aria-label="Kembali ke beranda">
-        <span class="logo-icon">☕</span>
-        <span class="logo-text">Kopee</span>
-      </a>
-
-      <!-- Heading -->
-      <div class="card-header">
-        <h1 class="card-title">Reset<br/><em>Password</em></h1>
-        <p class="card-subtitle">
-          Masukkan email yang terdaftar. Kami akan mengirimkan<br/>
-          tautan untuk membuat password baru.
-        </p>
+    <!-- LEFT: Branding -->
+    <div class="split-left">
+      <div class="split-left-inner">
+        <a href="index.html" class="brand-logo page-link">
+          <span class="brand-icon">☕</span>
+          <span class="brand-name">Koope</span>
+        </a>
+        <div class="brand-copy">
+          <h2 class="brand-headline">Reset your<br/><em>Password</em></h2>
+          <p class="brand-sub">Tenang, kami bantu kamu masuk kembali. Masukkan email dan kami kirimkan link reset.</p>
+        </div>
+        <div class="split-img-wrap">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&auto=format&fit=crop&q=80" alt="Coffee" class="split-img"/>
+        </div>
+        <div class="split-deco deco-1">✦</div>
+        <div class="split-deco deco-2">✦</div>
       </div>
+    </div>
 
-      <!-- ── Toast Notification ── -->
-      <div class="toast hidden" id="toast" role="alert" aria-live="polite">
-        <span class="toast-icon" id="toastIcon"></span>
-        <span class="toast-msg"  id="toastMsg"></span>
-      </div>
+    <!-- RIGHT: Form -->
+    <div class="split-right">
+      <div class="form-panel">
 
-      <!-- ── Form ── -->
-      <form class="reset-form" id="resetForm" novalidate autocomplete="off">
+        <a href="index.html" class="brand-logo brand-logo--mobile page-link">
+          <span class="brand-icon">☕</span>
+          <span class="brand-name">Koope</span>
+        </a>
 
-        <!-- Email Field -->
-        <div class="field-group" id="fieldGroup">
-          <label for="emailInput" class="field-label">Email Address</label>
-          <div class="input-wrap">
-            <span class="input-icon">✉</span>
-            <input
-              type="email"
-              id="emailInput"
-              name="email"
-              class="field-input"
-              placeholder="nama@email.com"
-              required
-              autocomplete="email"
-              spellcheck="false"
-              maxlength="254"
-            />
-            <span class="input-valid-icon" id="validIcon"></span>
-          </div>
-          <p class="field-error hidden" id="fieldError"></p>
+        <div class="form-header">
+          <h1 class="form-title">Forgot Password?</h1>
+          <p class="form-subtitle">Masukkan email terdaftar kamu</p>
         </div>
 
-        <!-- Submit Button -->
-        <button
-          type="submit"
-          class="btn-send"
-          id="sendBtn"
-          disabled
-          aria-disabled="true"
-        >
-          <span class="btn-label" id="btnLabel">Send Reset Link</span>
-          <span class="btn-spinner hidden" id="btnSpinner" aria-hidden="true"></span>
-          <span class="btn-arrow" id="btnArrow">→</span>
-        </button>
+        <!-- Toast (dari reset.js original) -->
+        <div class="inline-toast hidden" id="toast" role="alert" aria-live="polite">
+          <span class="inline-toast-icon" id="toastIcon"></span>
+          <span class="inline-toast-msg" id="toastMsg"></span>
+        </div>
 
-      </form>
+        <form id="resetForm" novalidate autocomplete="off">
 
-      <!-- Back to Login -->
-      <div class="card-footer">
-        <a href="login.html" class="back-link">
-          <span class="back-arrow">←</span>
-          Back to Login
-        </a>
+          <div class="field-group" id="fieldGroup">
+            <label class="field-label" for="emailInput">Email Address</label>
+            <div class="field-input-wrap">
+              <i class="fas fa-envelope field-icon"></i>
+              <input type="email" id="emailInput" name="email" class="field-input"
+                placeholder="nama@email.com" autocomplete="email"
+                spellcheck="false" maxlength="254" required/>
+              <span class="field-valid-icon" id="validIcon"></span>
+            </div>
+            <p class="field-error hidden" id="fieldError"></p>
+          </div>
+
+          <button type="submit" class="btn-submit" id="sendBtn" disabled aria-disabled="true">
+            <span id="btnLabel">Send Reset Link</span>
+            <span class="btn-spinner hidden" id="btnSpinner"></span>
+            <i class="fas fa-arrow-right btn-arrow" id="btnArrow"></i>
+          </button>
+
+        </form>
+
+        <p class="form-switch" style="margin-top: 24px;">
+          <a href="login.html" class="link-muted page-link">
+            <i class="fas fa-arrow-left" style="font-size:0.75rem; margin-right:5px;"></i>
+            Kembali ke Login
+          </a>
+        </p>
+
       </div>
-
     </div>
+  </div>
 
-    <div class="logo">
-      <img src="assets/FullLogo.png" alt="FullLogo">
-    </div>
-  </main>
-
-  <!-- ── Firebase Compat ── -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="JS/reset.js"></script>
-
 </body>
 </html>

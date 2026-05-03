@@ -3,29 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Restaurant Koope</title>
+  <title>Restaurant Koope — Premium Coffee & Dining, Kediri</title>
+
+  <!-- ── SEO Meta Tags ── -->
+  <meta name="description" content="Restaurant Koope — Nikmati pengalaman kopi premium dan menu eksklusif di Kediri. Bergabung sebagai VIP member untuk akses Secret Menu & diskon istimewa."/>
+  <meta name="keywords" content="restaurant koope, kopi kediri, coffee kediri, vip member, menu eksklusif, kediri restaurant"/>
+  <meta name="author" content="Restaurant Koope"/>
+  <meta name="robots" content="index, follow"/>
+
+  <!-- ── Open Graph (WhatsApp, Facebook, dll) ── -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:title"       content="Restaurant Koope — Premium Coffee & Dining"/>
+  <meta property="og:description" content="Nikmati pengalaman kopi premium dan menu eksklusif di Kediri. Bergabung sebagai VIP member untuk akses Secret Menu & diskon istimewa."/>
+  <meta property="og:image"       content="https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80"/>
+  <meta property="og:url"         content="https://kopee-web.firebaseapp.com"/>
+  <meta property="og:locale"      content="id_ID"/>
+  <meta property="og:site_name"   content="Restaurant Koope"/>
+
+  <!-- ── Twitter Card ── -->
+  <meta name="twitter:card"        content="summary_large_image"/>
+  <meta name="twitter:title"       content="Restaurant Koope — Premium Coffee & Dining"/>
+  <meta name="twitter:description" content="Nikmati pengalaman kopi premium dan menu eksklusif di Kediri."/>
+  <meta name="twitter:image"       content="https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80"/>
+
+  <!-- ── Theme Color (browser UI) ── -->
+  <meta name="theme-color" content="#2d1b0e"/>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="CSS/style.css" />
   <link rel="icon" type="image/x-icon" href="assets/Favicons.png">
 </head>
 <body class="is-loading">
 
-  <!-- ═══════════════════════════════════════════
-       AUTH LOADING OVERLAY (Fix: Firebase Flash)
-  ═══════════════════════════════════════════ -->
+  <!-- AUTH LOADING OVERLAY -->
   <div id="authOverlay" class="auth-overlay">
     <div class="auth-overlay-inner">
       <span class="auth-overlay-icon">☕</span>
-      <div class="auth-overlay-bar">
-        <div class="auth-overlay-progress"></div>
-      </div>
+      <div class="auth-overlay-bar"><div class="auth-overlay-progress"></div></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       LOGOUT CONFIRMATION MODAL
-  ═══════════════════════════════════════════ -->
+  <!-- LOGOUT MODAL -->
   <div id="logoutModal" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-icon">☕</div>
@@ -38,9 +58,7 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       NAVBAR
-  ═══════════════════════════════════════════ -->
+  <!-- NAVBAR -->
   <nav id="navbar">
     <div class="nav-logo">
       <span class="logo-icon">☕</span>
@@ -49,31 +67,16 @@
 
     <ul class="nav-links" id="navLinks">
       <li><a href="#home" class="nav-link">Home</a></li>
-
-      <!-- Guest: Menu biasa -->
-      <li class="guest-only">
-        <a href="#menu" class="nav-link">Menu</a>
-      </li>
-
-      <!-- VIP: Exclusive Menu + Special Discount -->
-      <li class="vip-only hidden">
-        <a href="#menu" class="nav-link vip-link">Exclusive Menu</a>
-      </li>
-      <li class="vip-only hidden">
-        <a href="#discount" class="nav-link vip-link">Special Discount</a>
-      </li>
+      <li class="guest-only"><a href="#menu" class="nav-link">Menu</a></li>
+      <li class="vip-only hidden"><a href="#menu" class="nav-link vip-link">Exclusive Menu</a></li>
+      <li class="vip-only hidden"><a href="#discount" class="nav-link vip-link">Special Discount</a></li>
     </ul>
 
     <div class="nav-auth">
-      <!-- Guest: Login button -->
-      <a href="login.html" class="btn-login guest-only">Login</a>
-
-      <!-- VIP: Profile Circle -->
+      <a href="login.html" class="btn-login guest-only page-link">Login</a>
       <div class="profile-circle vip-only hidden" id="profileCircle">
         <span id="profileInitial">U</span>
       </div>
-
-      <!-- Hamburger (mobile only) -->
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -81,7 +84,6 @@
       </button>
     </div>
 
-    <!-- Profile Dropdown -->
     <div class="profile-dropdown hidden" id="profileDropdown">
       <div class="dropdown-item">
         <span class="dropdown-label">Email</span>
@@ -97,7 +99,7 @@
     </div>
   </nav>
 
-  <!-- Mobile Nav Drawer -->
+  <!-- MOBILE DRAWER -->
   <div class="mobile-nav-drawer hidden" id="mobileNavDrawer">
     <ul class="mobile-nav-links">
       <li><a href="#home" class="mobile-nav-link">Home</a></li>
@@ -106,59 +108,81 @@
       <li class="vip-only hidden"><a href="#discount" class="mobile-nav-link vip-link">Special Discount</a></li>
     </ul>
     <div class="mobile-nav-footer">
-      <a href="login.html" class="mobile-btn-login guest-only">Login</a>
+      <a href="login.html" class="mobile-btn-login guest-only page-link">Login</a>
       <div class="mobile-vip-actions vip-only hidden">
-        <a href="reset.html" class="mobile-nav-link" style="font-size:0.8rem; opacity:0.7;">Reset Password</a>
+        <a href="reset.html" class="mobile-nav-link" style="font-size:0.8rem;opacity:0.7;">Reset Password</a>
         <button class="mobile-btn-logout" id="mobileLogoutBtn">Logout</button>
       </div>
     </div>
   </div>
-  <!-- Drawer backdrop -->
   <div class="mobile-nav-backdrop hidden" id="mobileNavBackdrop"></div>
 
-  <!-- ═══════════════════════════════════════════
-       HERO SECTION
-  ═══════════════════════════════════════════ -->
+  <!-- HERO -->
   <section id="home" class="hero">
     <div class="hero-overlay"></div>
+    <div class="hero-inner">
 
-    <!-- Guest Hero -->
-    <div class="hero-content guest-only" id="guestHero">
-      <p class="hero-eyebrow">Est. 2025 · Kediri</p>
-      <h1 class="hero-title">
-        A Cup of<br/>
-        <em>Extraordinary</em>
-      </h1>
-      <p class="hero-subtitle">
-        Bergabunglah sebagai member dan buka akses<br/>
-        <strong>Secret Menu</strong> eksklusif &amp; <strong>Diskon VIP</strong> istimewa.
-      </p>
-      <a href="register.html" class="btn-primary page-link">Get Membership</a>
+      <!-- Guest -->
+      <div class="hero-content guest-only" id="guestHero">
+        <p class="hero-eyebrow">Est. 2025 · Kediri</p>
+        <h1 class="hero-title">A Cup of<br/><em>Extraordinary</em></h1>
+        <p class="hero-subtitle">
+          Bergabunglah sebagai member dan buka akses<br/>
+          <strong>Secret Menu</strong> eksklusif &amp; <strong>Diskon VIP</strong> istimewa.
+        </p>
+        <div class="hero-cta-group">
+          <a href="register.html" class="btn-primary page-link">Get Membership</a>
+          <a href="#menu" class="btn-secondary">Lihat Menu</a>
+        </div>
+      </div>
+
+      <!-- VIP -->
+      <div class="hero-content vip-only hidden" id="vipHero">
+        <p class="hero-eyebrow">Welcome back, VIP Member</p>
+        <h1 class="hero-title vip-title">Selamat<br/><em id="vipGreeting">Datang Kembali</em></h1>
+        <p class="hero-subtitle">
+          Meja terbaik selalu menunggu Anda.<br/>
+          Nikmati pengalaman kopi yang tak tertandingi.
+        </p>
+        <div class="hero-cta-group">
+          <a href="#menu" class="btn-primary">Exclusive Menu</a>
+          <a href="#discount" class="btn-secondary">Special Discount</a>
+        </div>
+      </div>
+
+      <!-- Hero image (dari desain baru) -->
+      <div class="hero-image-wrap">
+        <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80" alt="Kopee Restaurant" class="hero-img"/>
+        <div class="hero-img-glow"></div>
+      </div>
     </div>
 
-    <!-- VIP Hero -->
-    <div class="hero-content vip-only hidden" id="vipHero">
-      <p class="hero-eyebrow">Welcome back, VIP Member</p>
-      <h1 class="hero-title vip-title">
-        Selamat<br/>
-        <em id="vipGreeting">Datang Kembali</em>
-      </h1>
-      <p class="hero-subtitle">
-        Meja terbaik selalu menunggu Anda.<br/>
-        Nikmati pengalaman kopi yang tak tertandingi.
-      </p>
-      <a href="#menu" class="btn-primary">Lihat Exclusive Menu</a>
-    </div>
-
-    <!-- Floating coffee beans deco -->
     <div class="bean bean-1">✦</div>
     <div class="bean bean-2">✦</div>
     <div class="bean bean-3">✦</div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       MENU SECTION
-  ═══════════════════════════════════════════ -->
+  <!-- SEARCH & FILTER BAR (dari desain baru) -->
+  <div class="search-bar-wrap" id="searchBarWrap">
+    <div class="search-bar-inner">
+      <div class="search-input-group">
+        <i class="fas fa-search search-icon-left"></i>
+        <input type="text" id="menuSearch" class="search-input" placeholder="Cari menu... (Espresso, Croissant, Matcha)" autocomplete="off"/>
+        <button class="search-clear hidden" id="searchClear" aria-label="Hapus">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="filter-pills" id="filterPills">
+        <button class="filter-pill active" data-filter="all"><i class="fas fa-th-large"></i> Semua</button>
+        <button class="filter-pill" data-filter="kopi"><i class="fas fa-coffee"></i> Kopi</button>
+        <button class="filter-pill" data-filter="non-kopi"><i class="fas fa-leaf"></i> Non-Kopi</button>
+        <button class="filter-pill" data-filter="makanan"><i class="fas fa-utensils"></i> Makanan</button>
+        <button class="filter-pill vip-only hidden" data-filter="vip"><i class="fas fa-crown"></i> VIP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU SECTION -->
   <section id="menu" class="menu-section">
     <div class="section-header">
       <p class="section-eyebrow">Our Offerings</p>
@@ -168,14 +192,17 @@
       </h2>
     </div>
 
-    <div class="menu-grid" id="menuGrid">
-      <!-- Cards injected by JS -->
+    <div class="no-results hidden" id="noResults">
+      <i class="fas fa-search no-results-icon"></i>
+      <p class="no-results-title">Menu tidak ditemukan</p>
+      <p class="no-results-desc">Coba kata kunci lain atau reset filter</p>
+      <button class="btn-reset-filter" id="resetFilter">Reset Filter</button>
     </div>
+
+    <div class="menu-grid" id="menuGrid"></div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       SPECIAL DISCOUNT SECTION (VIP Only)
-  ═══════════════════════════════════════════ -->
+  <!-- DISCOUNT (VIP Only) -->
   <section id="discount" class="discount-section vip-only hidden">
     <div class="section-header">
       <p class="section-eyebrow">Exclusive For You</p>
@@ -200,18 +227,13 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       FOOTER
-  ═══════════════════════════════════════════ -->
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-logo"><img src="assets/FullLogo.png" alt="Logo"></div>
     <p class="footer-tagline">Where every cup tells a story.</p>
     <p class="footer-copy">© 2026 Restaurant Koope · Kediri, Indonesia</p>
   </footer>
 
-  <!-- ═══════════════════════════════════════════
-       FIREBASE (Compat)
-  ═══════════════════════════════════════════ -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="JS/script.js"></script>

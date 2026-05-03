@@ -1,80 +1,140 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Koope - Register</title>
-        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-        <link rel="stylesheet" href="CSS/register.css">
-        <link rel="stylesheet" href="CSS/kopee-toast.css">
-        <link rel="icon" type="image/x-icon" href="assets/Favicons.png">
-    </head>
-    <body>
-       
-        <main class="hero">
-            <div class="container-reg">
-                <div class="text-reg">
-                    <h1>Welcome</h1>
-                    <p>Please enter your details to create an account.</p>
-                </div>
-    
-                <form action="" method="post" id="reg-form">
-                    <div class="all-input-reg">
-                        <div class="email-reg">
-                            <label for="emai-reg">Email address:</label>
-                            <input type="email" name="email-reg" id="email-reg" placeholder="Your@gmail.com" required>
-                        </div>
-    
-                        <div class="pass-reg">
-                            <label for="pass-reg">Password:</label>
-                            <input type="password" name="pass-reg" id="pass-reg" placeholder="●●●●●●●●" required>
-                        </div>
- 
-                        <div class="pass-reg-confirm">
-                            <label for="pass-reg-confirm">Confirm Password:</label>
-                            <input type="password" name="pass-reg-confirm" id="pass-reg-confirm" placeholder="●●●●●●●●" required>
-                        </div>
-    
-                        <div class="go-log">
-                            <h3>Already have an account? <a href="login.html">Sign In</a></h3>
-                        </div>
-    
-                        <div class="btn-reg">
-                            <button type="submit" id="reg-btn">Sign Up</button>
-                        </div>
-                    </div>
-                </form>
-                <div class="logo">
-                    <img src="assets/FullLogo.png" alt="FullLogo">
-                </div>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar VIP — Restaurant Koope Kediri</title>
+  <meta name="description" content="Daftar sebagai VIP member Koope dan dapatkan akses Secret Menu eksklusif & diskon spesial di Kediri."/>
+  <meta property="og:title"       content="Daftar VIP — Restaurant Koope"/>
+  <meta property="og:description" content="Daftar sebagai VIP member Koope dan dapatkan akses Secret Menu eksklusif & diskon spesial."/>
+  <meta property="og:image"       content="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=1200&q=80"/>
+  <meta name="theme-color"        content="#2d1b0e"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/auth.css">
+  <link rel="stylesheet" href="CSS/kopee-toast.css">
+  <link rel="icon" type="image/x-icon" href="assets/Favicons.png">
+</head>
+<body>
+  <div class="page-split">
+
+    <!-- LEFT: Branding -->
+    <div class="split-left">
+      <div class="split-left-inner">
+        <a href="index.html" class="brand-logo page-link">
+          <span class="brand-icon">☕</span>
+          <span class="brand-name">Koope</span>
+        </a>
+        <div class="brand-copy">
+          <h2 class="brand-headline">Join the<br/><em>VIP Club</em></h2>
+          <p class="brand-sub">Daftar sekarang dan dapatkan akses eksklusif ke Secret Menu, diskon VIP, dan pengalaman yang tak terlupakan.</p>
+        </div>
+        <div class="split-img-wrap">
+          <img src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=800&auto=format&fit=crop&q=80" alt="Coffee" class="split-img"/>
+        </div>
+        <div class="split-deco deco-1">✦</div>
+        <div class="split-deco deco-2">✦</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="split-right">
+      <div class="form-panel">
+
+        <a href="index.html" class="brand-logo brand-logo--mobile page-link">
+          <span class="brand-icon">☕</span>
+          <span class="brand-name">Koope</span>
+        </a>
+
+        <div class="form-header">
+          <h1 class="form-title">Create Account</h1>
+          <p class="form-subtitle">Mulai perjalanan kopi eksklusif kamu</p>
+        </div>
+
+        <form id="reg-form" novalidate>
+
+          <!-- Email -->
+          <div class="field-group" id="fg-email">
+            <label class="field-label" for="email-reg">Email Address</label>
+            <div class="field-input-wrap">
+              <i class="fas fa-envelope field-icon"></i>
+              <input type="email" id="email-reg" name="email-reg" class="field-input"
+                placeholder="nama@email.com" autocomplete="email" required/>
+              <span class="field-valid-icon" id="emailValid"></span>
             </div>
-        </main>
-    
-        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    
-        <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyD9ntDSRtMV8XdcSem7I2onoB1LIIuaQjk",
-            authDomain: "kopee-web.firebaseapp.com",
-            projectId: "kopee-web",
-            storageBucket: "kopee-web.firebasestorage.app",
-            messagingSenderId: "691671488388",
-            appId: "1:691671488388:web:d05dca2671c576ff2aafd1"
-          };
-        
-          const app = firebase.initializeApp(firebaseConfig);
-          const auth = firebase.auth();
-          const db = firebase.firestore();
-          const rtdb = firebase.database();
-        </script>
- 
-        <!-- Toast system harus load sebelum register.js -->
-        <script src="JS/kopee-toast.js"></script>
-        <script src="JS/register.js"></script>
-    </body>
+            <p class="field-error hidden" id="emailError"></p>
+          </div>
+
+          <!-- Password -->
+          <div class="field-group" id="fg-pass">
+            <label class="field-label" for="pass-reg">Password</label>
+            <div class="field-input-wrap">
+              <i class="fas fa-lock field-icon"></i>
+              <input type="password" id="pass-reg" name="pass-reg" class="field-input"
+                placeholder="Min. 6 karakter" autocomplete="new-password" required/>
+              <button type="button" class="pass-toggle" id="passToggle" aria-label="Toggle password">
+                <i class="fas fa-eye" id="passToggleIcon"></i>
+              </button>
+            </div>
+            <!-- Strength bar -->
+            <div class="strength-wrap" id="strengthWrap">
+              <div class="strength-bar">
+                <div class="strength-fill" id="strengthFill"></div>
+              </div>
+              <span class="strength-label" id="strengthLabel"></span>
+            </div>
+            <p class="field-error hidden" id="passError"></p>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="field-group" id="fg-confirm">
+            <label class="field-label" for="pass-reg-confirm">Confirm Password</label>
+            <div class="field-input-wrap">
+              <i class="fas fa-lock field-icon"></i>
+              <input type="password" id="pass-reg-confirm" name="pass-reg-confirm" class="field-input"
+                placeholder="Ulangi password" autocomplete="new-password" required/>
+              <button type="button" class="pass-toggle" id="confirmToggle" aria-label="Toggle confirm password">
+                <i class="fas fa-eye" id="confirmToggleIcon"></i>
+              </button>
+            </div>
+            <p class="field-error hidden" id="confirmError"></p>
+          </div>
+
+          <button type="submit" class="btn-submit" id="reg-btn">
+            <span id="btnLabel">Create Account</span>
+            <span class="btn-spinner hidden" id="btnSpinner"></span>
+            <i class="fas fa-arrow-right btn-arrow" id="btnArrow"></i>
+          </button>
+
+          <p class="form-switch">
+            Sudah punya akun? <a href="login.html" class="link-gold page-link">Masuk di sini</a>
+          </p>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD9ntDSRtMV8XdcSem7I2onoB1LIIuaQjk",
+      authDomain: "kopee-web.firebaseapp.com",
+      projectId: "kopee-web",
+      storageBucket: "kopee-web.firebasestorage.app",
+      messagingSenderId: "691671488388",
+      appId: "1:691671488388:web:d05dca2671c576ff2aafd1"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const rtdb = firebase.database();
+  </script>
+  <script src="JS/kopee-toast.js"></script>
+  <script src="JS/register.js"></script>
+</body>
 </html>
